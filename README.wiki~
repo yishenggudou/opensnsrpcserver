@@ -15,4 +15,22 @@ rpc服务器
 ==传出参数==
 #   授权页的url
 #   access token
-#   
+#
+==统一的调用函数==
+    # 发布消息 Push
+    # 获取最新消息 Pull
+    # 
+==数据库设计==
+    将配置信息记入数据库
+    将每次请求算做一个单独的应用
+    当用户授权之后 只需传入consumer_key consumer_secret server_name user_name 即可以获得相应操作
+    id
+    server_name
+    user_name[]
+    consumer_key
+    consumer_secret
+    request_token
+    access_token_key
+    access_token_secret
+    access_token
+    
