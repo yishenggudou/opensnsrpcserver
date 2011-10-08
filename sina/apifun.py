@@ -11,7 +11,7 @@
     Licensed under the MIT License, Version 2.0 (the "License");
 '''
 
-import os
+import os,sys
 import conf as _conf
 from weibopy import OAuthHandler
 from lib import *
@@ -55,7 +55,7 @@ def verify(user_name,server_user_name,verify,server_user_pix='timger',server='si
     sys.path.append(os.path.join(DIR_PATH,'../'))
     from db import * 
     res = {}
-    sdb = session.query(TWDBS).filter(TWDBS.consumer_key=consumer_key,TWDBS.consumer_secret=consumer_secret,TWDBS.user_name=user_name,TWDBS.server_user_name=server_user_name,TWDBS.server=server).all()[-1]
+    sdb = session.query(TWDBS).filter(TWDBS.consumer_key==consumer_key,TWDBS.consumer_secret==consumer_secret,TWDBS.user_name==user_name,TWDBS.server_user_name==server_user_name,TWDBS.server==server).all()[-1]
     o = OAuthHandler(consumer_key=consumer_key, consumer_secret=consumer_secret,callback=callback)
     request_token_key,request_token_sercet = [ i.split('=')[1]  for i in sdb.request_token.split('&')]
     o.request.token = oauth.OAuthToken(request_token_key,request_token_sercet)
@@ -78,7 +78,7 @@ def get_api(consumer_key,consumer_sercet,access_token_key,access_token_sercet,ac
     sys.path.append(os.path.join(DIR_PATH,'../'))
     from weibopy import OAuthHandler, API, WeibopError
     from db import * 
-    sdb = session.query(TWDBS).filter(TWDBS.consumer_key=consumer_key,TWDBS.consumer_secret=consumer_secret,TWDBS.user_name=user_name,TWDBS.server_user_name=server_user_name,TWDBS.server=server).all()[-1]
+    sdb = session.query(TWDBS).filter(TWDBS.consumer_key==consumer_key,TWDBS.consumer_secret==consumer_secret,TWDBS.user_name==user_name,TWDBS.server_user_name==server_user_name,TWDBS.server==server).all()[-1]
     try:
         o = OAuthHandler(consumer_key, consumer_secret)
         o.setToken(sdb.access_token_key,sdb.access_token_secret)
@@ -108,4 +108,10 @@ def get(user_name,server_user_name,status,server_user_pix='timger',server='sina'
         res['status'] = False
     return res
     
-    
+if __name__ == "__main__":
+    print sys.argv
+    if sys.argv[1] == 'url':
+        get_authorization_url('timger','timger',server_user_pix='timger',server='sina',callback=None,consumer_key=_conf.consumer_key,consumer_secret=_conf.consumer_secret,)
+    if sys.argv[1] == 'verify':
+        verify('timger','timger',sys.argv[2],server_user_pix='timger',server='sina',callback='/login',consumer_key=_conf.consumer_key,consumer_secret=_conf.consumer_secret)
+
