@@ -39,8 +39,10 @@ class TWDBS(Base):
     access_token_key = Column(String)
     access_token_secret = Column(String)
     access_token = Column(String)
+    login_name = Column(String)  #当不是oauth实现的同步的时候有效
+    login_passwd = Column(String) #当不是oauth实现的同步方式的时候有效
     
-    def __init__(self, server_name, user_name,user_pix,consumer_key,consumer_secret,request_token,access_token_key,access_token_secret,access_token):
+    def __init__(self, server_name, user_name,user_pix,consumer_key,consumer_secret,request_token,access_token_key,access_token_secret,access_token,login_name,login_passwd):
         self.server_name = server_name
         self.user_name = user_name
         self.user_pix = user_pix 
@@ -50,6 +52,8 @@ class TWDBS(Base):
         self.access_token_key = access_token_key 
         self.access_token_secret = access_token_secret 
         self.access_token = access_token
+        self.login_name = login_name
+        self.login_passwd = login_passwd
 
     def __repr__(self):
         return "<TWDBS('%s','%s', '%s')>" % (self.server_name, self.user_name, self.user_pix)
