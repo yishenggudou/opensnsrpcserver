@@ -7,9 +7,30 @@ rpc服务器
 * 豆瓣
 * 人人
 ==传入参数==
-#   key serect
-#   user
+具体的步骤可以参见[http://goo.gl/pL6QO]
+#   在服务商申请的App Key和App Secret
+#   请求的服务名[sina,qq,douban,renren,twitter,facebook]
+#   用户授权之后的request token
+#   需要返回的url地址和参数
 ==传出参数==
-#   url
-#   token
-#   
+#   授权页的url
+#   access token
+#
+==统一的调用函数==
+# 发布消息 Push
+# 获取最新消息 Pull
+# 
+==数据库设计==
+将配置信息记入数据库
+将每次请求算做一个单独的应用
+当用户授权之后 只需传入consumer_key consumer_secret server_name user_name 即可以获得相应操作
+id
+server_name
+user_name[]
+consumer_key
+consumer_secret
+request_token
+access_token_key
+access_token_secret
+access_token
+    
