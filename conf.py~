@@ -11,5 +11,5 @@
     Licensed under the MIT License, Version 2.0 (the "License");
 '''
 
-DBURL = ""
+DBURL = "sqlite:///db.db"
 DBTEST = True
