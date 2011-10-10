@@ -1,0 +1,7 @@
+access_token_key = 'bf59f1f60222a565be7b69285e370950'
+authorization_url = 'http://api.t.sina.com.cn/oauth/authorize?oauth_token=bfa7c1bc7806e6c9c030199aad0db736'
+access_token_secret = '7978fdd6fec00e6756c547a64c66544f'
+consumer_secret = '2821e0066323a191c95173c905eb50a6'
+access_token = 'oauth_token_secret=7978fdd6fec00e6756c547a64c66544f&oauth_token=bf59f1f60222a565be7b69285e370950'
+verifier = '793928'
+consumer_key = '507227858'
