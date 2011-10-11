@@ -1,0 +1,18 @@
+# Authentication parameters
+oauth_consumer_key: 
+oauth_consumer_secret: 
+oauth_token_key: 
+oauth_token_secret: 
+
+# Client parameters
+api_prefix: "https://www.googleapis.com/buzz/v1"
+
+# Testing Parameters
+testing_id: "110842231205170942808"
+testing_account: "buzzapitesting"
+target_id: "107807692475771887386"
+target_account: "hikingfan"
+post_id: "tag:google.com,2010:buzz:z12wdlxi2pmnwj5df23bihy5mkqmuvbpa04"
+
+# Debug
+debug: true

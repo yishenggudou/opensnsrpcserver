@@ -1,0 +1,5 @@
+To run tests, from the root of the buzz python client source directory:
+$ BUZZ_CONFIG_PATH=/path/to/your/config ./tests/test_buzz.py
+
+See examples/buzz_pythonclient.yaml for an example of how to format this
+config file.

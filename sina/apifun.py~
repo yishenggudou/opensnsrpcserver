@@ -14,6 +14,8 @@
 import os,sys
 import conf as _conf
 from weibopy import OAuthHandler
+from weibopy import oauth
+from sqlalchemy import and_,or_
 from lib import *
 
 DIR_PATH = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
@@ -29,7 +31,7 @@ __version__ = (0,0,0)
 
 
 
-def get_authorization_url(user_name,server_user_name,server_user_pix='timger',server='sina',callback=None,consumer_key=_conf.consumer_key,consumer_secret=_conf.consumer_secret,):
+def get_authorization_url(user_name,server_user_name,server_user_pix='timger',server_name='sina',callback=None,consumer_key=_conf.consumer_key,consumer_secret=_conf.consumer_secret,):
     import sys 
     sys.path.append(os.path.join(DIR_PATH,'../'))
     from db import * 
@@ -38,7 +40,8 @@ def get_authorization_url(user_name,server_user_name,server_user_pix='timger',se
     authorization_url = o.get_authorization_url()
     request_token = o.request_token
     print request_token
-    sdb = TWDBS(consumer_key=consumer_key,consumer_secret=consumer_secret,request_token=str(request_token))
+    sdb = TWDBS(user_name=user_name,server_user_name=server_user_name,server_name=server_name,server_user_pix=server_user_pix,consumer_key=consumer_key,consumer_secret=consumer_secret,request_token=str(request_token))
+    print sdb
     session.add(sdb)
     session.commit()
     session.close()
@@ -49,24 +52,31 @@ def get_authorization_url(user_name,server_user_name,server_user_pix='timger',se
     print authorization_url 
     return res
 
-def verify(user_name,server_user_name,verify,server_user_pix='timger',server='sina',callback='/login',consumer_key=_conf.consumer_key,consumer_secret=_conf.consumer_secret,):
+def verify(user_name,server_user_name,verify,server_user_pix='timger',server_name='sina',callback='/login',consumer_key=_conf.consumer_key,consumer_secret=_conf.consumer_secret,):
     
     import sys 
     sys.path.append(os.path.join(DIR_PATH,'../'))
     from db import * 
     res = {}
-    sdb = session.query(TWDBS).filter(TWDBS.consumer_key=consumer_key,TWDBS.consumer_secret=consumer_secret,TWDBS.user_name=user_name,TWDBS.server_user_name=server_user_name,TWDBS.server=server).all()[-1]
+    #sdb = session.query(TWDBS).filter_by(TWDBS.consumer_key==consumer_key,TWDBS.consumer_secret==consumer_secret,TWDBS.user_name==user_name,TWDBS.server_user_name==server_user_name,TWDBS.server_name==server).all()[-1]
+    sdb = session.query(TWDBS).filter(and_(TWDBS.consumer_key==consumer_key,TWDBS.consumer_secret==consumer_secret,TWDBS.user_name==user_name,TWDBS.server_user_name==server_user_name,TWDBS.server_name==server_name)).all()
+    print sdb
+    sdb=sdb[-1]
     o = OAuthHandler(consumer_key=consumer_key, consumer_secret=consumer_secret,callback=callback)
-    request_token_key,request_token_sercet = [ i.split('=')[1]  for i in sdb.request_token.split('&')]
-    o.request.token = oauth.OAuthToken(request_token_key,request_token_sercet)
-    try:
-        access_token = o.get_access_token(verifier)
-        sdb.access_token_key = access_token.key
-        sdb.access_token_secret = access_token.secret
-        sdb.access_token = access_token.to_string()
-        res.status = True
-    except:
-        res['status'] = False
+    request_token_sercet,request_token_key = [ i.split('=')[1]  for i in sdb.request_token.split('&')]
+    #o.request_token = oauth.OAuthToken(request_token_key,request_token_sercet)
+    print sdb.request_token
+    print request_token_key,'\n',request_token_sercet
+    o.set_request_token(request_token_key,request_token_sercet)
+    #try:
+    access_token = o.get_access_token(verify)
+    sdb.access_token_key = access_token.key
+    sdb.access_token_secret = access_token.secret
+    sdb.access_token = access_token.to_string()
+    #    res['status'] = True
+    #except:
+    #    res['status'] = False
+    session.flush()
     session.commit()
     session.close()
     return res
@@ -78,7 +88,7 @@ def get_api(consumer_key,consumer_sercet,access_token_key,access_token_sercet,ac
     sys.path.append(os.path.join(DIR_PATH,'../'))
     from weibopy import OAuthHandler, API, WeibopError
     from db import * 
-    sdb = session.query(TWDBS).filter(TWDBS.consumer_key==consumer_key,TWDBS.consumer_secret==consumer_secret,TWDBS.user_name==user_name,TWDBS.server_user_name==server_user_name,TWDBS.server==server).all()[-1]
+    sdb = session.query(TWDBS).filter(TWDBS.consumer_key==consumer_key,TWDBS.consumer_secret==consumer_secret,TWDBS.user_name==user_name,TWDBS.server_user_name==server_user_name,TWDBS.server_name==server).all()[-1]
     try:
         o = OAuthHandler(consumer_key, consumer_secret)
         o.setToken(sdb.access_token_key,sdb.access_token_secret)
@@ -90,7 +100,7 @@ def post(user_name,server_user_name,status,server_user_pix='timger',server='sina
 
     res = {}
     try:
-        o = get_api(consumer_key,consumer_sercet,access_token_key,access_token_sercet,access_token,user_name,server_user_name,server='sina')
+        o = get_api(consumer_key,consumer_sercet,access_token_key,access_token_sercet,access_token,user_name,server_user_name,server_name='sina')
         o.update_status(status)
         res['status'] = True
     except:
@@ -111,7 +121,7 @@ def get(user_name,server_user_name,status,server_user_pix='timger',server='sina'
 if __name__ == "__main__":
     print sys.argv
     if sys.argv[1] == 'url':
-        get_authorization_url('timger','timger',server_user_pix='timger',server='sina',callback=None,consumer_key=_conf.consumer_key,consumer_secret=_conf.consumer_secret,)
+        get_authorization_url('timger','timger',server_user_pix='timger',server_name='sina',callback=None,consumer_key=_conf.consumer_key,consumer_secret=_conf.consumer_secret,)
     if sys.argv[1] == 'verify':
-        verify('timger','timger',sys.argv[2],server_user_pix='timger',server='sina',callback='/login',consumer_key=_conf.consumer_key,consumer_secret=_conf.consumer_secret)
+        verify('timger','timger',sys.argv[2],server_user_pix='timger',server_name='sina',callback='/login',consumer_key=_conf.consumer_key,consumer_secret=_conf.consumer_secret)
 

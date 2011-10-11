@@ -1,0 +1,653 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>buzz</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Home&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Module&nbsp;buzz
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="buzz-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module buzz</h1><p class="nomargin-top"><span class="codelink"><a href="buzz-pysrc.html">source&nbsp;code</a></span></p>
+<h1 class="heading">Common Tasks</h1>
+    <ul>
+      <li>
+        Authentication
+        <ul>
+          <li>
+            Google's implementation of OAuth is covered in the 
+            documentation for the Accounts API: 
+            http://code.google.com/apis/accounts/docs/OAuth_ref.html
+          </li>
+          <li>
+            Getting the request token:
+<pre class="literalblock">
+ import buzz
+ client = buzz.Client()
+ client.build_oauth_consumer('your-app.appspot.com', 'consumer_secret')
+ client.oauth_scopes.append(buzz.FULL_ACCESS_SCOPE)
+ request_token = \
+   client.fetch_oauth_request_token('http://example.com/callback/')
+ # Persist the request_token
+ authorization_url = client.build_oauth_authorization_url()
+ self.redirect(authorization_url)
+</pre>
+          </li>
+          <li>
+            Exchanging a request token for an access token:
+<pre class="literalblock">
+ import buzz
+ client = buzz.Client()
+ client.build_oauth_consumer('your-app.appspot.com', 'consumer_secret')
+ client.oauth_scopes.append(buzz.FULL_ACCESS_SCOPE)
+ # Retrieve the persisted request token
+ client.build_oauth_request_token(
+   request_token.key, request_token.secret
+ )
+ verifier = self.request.get('oauth_verifier')
+ access_token = \
+   client.fetch_oauth_access_token(verifier)
+ # Persist the access_token
+</pre>
+          </li>
+          <li>
+            Reusing an access token:
+<pre class="literalblock">
+ import buzz
+ client = buzz.Client()
+ client.build_oauth_consumer('your-app.appspot.com', 'consumer_secret')
+ client.oauth_scopes.append(buzz.FULL_ACCESS_SCOPE)
+ # Retrieve the persisted access token
+ client.build_oauth_access_token(
+   access_token.key, access_token.secret
+ )
+</pre>
+          </li>
+        </ul>
+      </li>
+      <li>
+        Getting streams
+        <ul>
+          <li>
+            Signed-in user's consumption stream:
+<pre class="literalblock">
+ results = client.posts(user_id='@me', type_id='@consumption')
+</pre>
+          </li>
+          <li>
+            Signed-in user's published posts:
+<pre class="literalblock">
+ results = client.posts(user_id='@me', type_id='@self')
+</pre>
+          </li>
+          <li>
+            Another user's public posts:
+<pre class="literalblock">
+ results = client.posts(user_id='googlebuzz', type_id='@public')
+</pre>
+          </li>
+          <li>
+            Larger result pages:
+<pre class="literalblock">
+ results = client.posts(
+   user_id='googlebuzz', type_id='@public', max_results=100
+ )
+</pre>
+          </li>
+        </ul>
+      </li>
+      <li>
+        Creating a post
+        <ul>
+          <li>
+            Simple:
+<pre class="literalblock">
+ post = buzz.Post(
+   content=&quot;This is some example content.&quot;
+ )
+ client.create_post(post)
+</pre>
+          </li>
+          <li>
+            Post with a link:
+<pre class="literalblock">
+ attachment = buzz.Attachment(
+   type='article',
+   title='Google Buzz',
+   uri='http://www.google.com/buzz'
+ )
+ post = buzz.Post(
+   content=&quot;Google Buzz is really cool.&quot;,
+   attachments=[attachment]
+ )
+ client.create_post(post)
+</pre>
+          </li>
+          <li>
+            Post with a geocode:
+<pre class="literalblock">
+ post = buzz.Post(
+   content=&quot;Google Buzz is really cool.&quot;,
+   geocode=('37.421776', '-122.084155')
+ )
+ client.create_post(post)
+</pre>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+<!-- ==================== CLASSES ==================== -->
+<a name="section-Classes"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Classes</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Classes"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="buzz.RetrieveError-class.html" class="summary-name">RetrieveError</a><br />
+      This exception gets raised if there was some kind of HTTP or 
+        network error while accessing the API.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="buzz.JSONParseError-class.html" class="summary-name">JSONParseError</a><br />
+      This exception gets raised if the API sends data that does not 
+        match what the client was expecting.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="buzz.Client-class.html" class="summary-name">Client</a><br />
+      The Buzz API <a href="buzz.Client-class.html" 
+        class="link">Client</a> object is the primary method of making 
+        calls against the Buzz API.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="buzz.Post-class.html" class="summary-name">Post</a><br />
+      The <a href="buzz.Post-class.html" class="link">Post</a> object 
+        represents a post within Buzz.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="buzz.Comment-class.html" class="summary-name">Comment</a><br />
+      The <a href="buzz.Comment-class.html" class="link">Comment</a> 
+        object represents a comment on a <a href="buzz.Post-class.html" 
+        class="link">Post</a> within Buzz.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="buzz.Link-class.html" class="summary-name">Link</a><br />
+      The <a href="buzz.Link-class.html" class="link">Link</a> object 
+        represents a hyperlink.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="buzz.Attachment-class.html" class="summary-name">Attachment</a><br />
+      The <a href="buzz.Attachment-class.html" 
+        class="link">Attachment</a> object represents an attachment to a <a
+        href="buzz.Post-class.html" class="link">Post</a> within Buzz.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="buzz.Person-class.html" class="summary-name">Person</a><br />
+      The <a href="buzz.Person-class.html" class="link">Person</a> object
+        represents a Buzz user.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="buzz.Result-class.html" class="summary-name">Result</a><br />
+      The <a href="buzz.Result-class.html" class="link">Result</a> object
+        encapsulates each result returned from the API.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="buzz.ResultIterator-class.html" class="summary-name">ResultIterator</a><br />
+      A <a href="buzz.ResultIterator-class.html" 
+        class="link">ResultIterator</a> allows iteration over a result set.
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_prune_json_envelope"></a><span class="summary-sig-name">_prune_json_envelope</span>(<span class="summary-sig-arg">json</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="buzz-pysrc.html#_prune_json_envelope">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_parse_links"></a><span class="summary-sig-name">_parse_links</span>(<span class="summary-sig-arg">json</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="buzz-pysrc.html#_parse_links">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_parse_geocode"></a><span class="summary-sig-name">_parse_geocode</span>(<span class="summary-sig-arg">geocode</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="buzz-pysrc.html#_parse_geocode">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="buzz-module.html#default_path" class="summary-name">default_path</a> = <code title="'/home/bobaman/src/buzz-python-client/buzz_python_client.yaml'"><code class="variable-quote">'</code><code class="variable-string">/home/bobaman/src/buzz-python-client/buzz_pyth</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="buzz-module.html#CONFIG_PATH" class="summary-name">CONFIG_PATH</a> = <code title="'/home/bobaman/src/buzz-python-client/buzz_python_client.yaml'"><code class="variable-quote">'</code><code class="variable-string">/home/bobaman/src/buzz-python-client/buzz_pytho</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="buzz-module.html#CLIENT_CONFIG" class="summary-name">CLIENT_CONFIG</a> = <code title="{'oauth_consumer_key': 'buzz-api-testing.appspot.com',
+ 'oauth_consumer_secret': 'zbLvAw5V5WowgFBC8O/imLxk',
+ 'oauth_token_key': '1/eRxtJ9KI1OaBZ8EAs6bUnz1BwLhz1_OXvqto2VKEzdI',
+ 'oauth_token_secret': 'OXsT9GVGYu9AnYHVYb4wghUE',
+ 'testing_account': 'buzzapitesting',
+ 'testing_id': 110842231205170942808,
+ 'testing_post_id': 'B:z13ytx2iwzndxx3kl23penkjtn2kcj4ag04',
+ 'testing_target_account': 'api.bobaman',
+..."><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">oauth_consumer_key</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">buzz-api-testing.appsp</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="API_PREFIX"></a><span class="summary-name">API_PREFIX</span> = <code title="'https://www.googleapis.com/buzz/v1'"><code class="variable-quote">'</code><code class="variable-string">https://www.googleapis.com/buzz/v1</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="READONLY_SCOPE"></a><span class="summary-name">READONLY_SCOPE</span> = <code title="'https://www.googleapis.com/auth/buzz.readonly'"><code class="variable-quote">'</code><code class="variable-string">https://www.googleapis.com/auth/buzz.readonly</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="FULL_ACCESS_SCOPE"></a><span class="summary-name">FULL_ACCESS_SCOPE</span> = <code title="'https://www.googleapis.com/auth/buzz'"><code class="variable-quote">'</code><code class="variable-string">https://www.googleapis.com/auth/buzz</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="buzz-module.html#OAUTH_REQUEST_TOKEN_URI" class="summary-name">OAUTH_REQUEST_TOKEN_URI</a> = <code title="'https://www.google.com/accounts/OAuthGetRequestToken'"><code class="variable-quote">'</code><code class="variable-string">https://www.google.com/accounts/OAu</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="buzz-module.html#OAUTH_ACCESS_TOKEN_URI" class="summary-name">OAUTH_ACCESS_TOKEN_URI</a> = <code title="'https://www.google.com/accounts/OAuthGetAccessToken'"><code class="variable-quote">'</code><code class="variable-string">https://www.google.com/accounts/OAut</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="buzz-module.html#OAUTH_AUTHORIZATION_URI" class="summary-name">OAUTH_AUTHORIZATION_URI</a> = <code title="'https://www.google.com/buzz/api/auth/OAuthAuthorizeToken'"><code class="variable-quote">'</code><code class="variable-string">https://www.google.com/buzz/api/aut</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="DEBUG"></a><span class="summary-name">DEBUG</span> = <code title="False">False</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="DEFAULT_PAGE_SIZE"></a><span class="summary-name">DEFAULT_PAGE_SIZE</span> = <code title="20">20</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="None">None</code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="default_path"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">default_path</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">'</code><code class="variable-string">/home/bobaman/src/buzz-python-client/buzz_python_client.yaml</code><code class="variable-quote">'</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="CONFIG_PATH"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">CONFIG_PATH</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">'</code><code class="variable-string">/home/bobaman/src/buzz-python-client/buzz_python_client.yaml</code><code class="variable-quote">'</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="CLIENT_CONFIG"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">CLIENT_CONFIG</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">oauth_consumer_key</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">buzz-api-testing.appspot.com</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">oauth_consumer_secret</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">zbLvAw5V5WowgFBC8O/imLxk</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">oauth_token_key</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">1/eRxtJ9KI1OaBZ8EAs6bUnz1BwLhz1_OXvqto2VKEzdI</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">oauth_token_secret</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">OXsT9GVGYu9AnYHVYb4wghUE</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">testing_account</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">buzzapitesting</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">testing_id</code><code class="variable-quote">'</code><code class="variable-op">: </code>110842231205170942808<code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">testing_post_id</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">B:z13ytx2iwzndxx3kl23penkjtn2kcj4ag04</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">testing_target_account</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">api.bobaman</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="OAUTH_REQUEST_TOKEN_URI"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">OAUTH_REQUEST_TOKEN_URI</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">'</code><code class="variable-string">https://www.google.com/accounts/OAuthGetRequestToken</code><code class="variable-quote">'</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="OAUTH_ACCESS_TOKEN_URI"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">OAUTH_ACCESS_TOKEN_URI</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">'</code><code class="variable-string">https://www.google.com/accounts/OAuthGetAccessToken</code><code class="variable-quote">'</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="OAUTH_AUTHORIZATION_URI"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">OAUTH_AUTHORIZATION_URI</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">'</code><code class="variable-string">https://www.google.com/buzz/api/auth/OAuthAuthorizeToken</code><code class="variable-quote">'</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Home&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Wed Oct 20 13:13:56 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

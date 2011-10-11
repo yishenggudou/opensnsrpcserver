@@ -1,0 +1,11 @@
+syntax: glob
+*.pyc
+._*
+*,cover
+.DS_Store
+.coverage
+.*.swp
+cover
+incantation.py
+places_api.py
+buzz_python_client.yaml

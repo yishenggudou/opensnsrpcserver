@@ -1,0 +1,8 @@
+include README
+include COPYING
+include buzz.py
+include setup.py
+recursive-include docs *
+recursive-include examples *
+recursive-include tests *
+recursive-include third_party *

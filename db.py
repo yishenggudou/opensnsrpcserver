@@ -19,10 +19,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 DIR_PATH = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+print DIR_PATH
 NAME_FILE = os.path.relpath(__file__)
 #sys.path[-2:-1]=[DIR_PATH]
 #from conf import DBURL, DBTEST
-DBURL = "sqlite:///db.db"
+DBURL = "sqlite:///%s/db.db" %DIR_PATH
+print DBURL
 DBTEST = True
 
 engine = create_engine(DBURL, echo=DBTEST)
@@ -47,10 +49,11 @@ class TWDBS(Base):
     login_name = Column(String)  #当不是oauth实现的同步的时候有效
     login_passwd = Column(String) #当不是oauth实现的同步方式的时候有效
     
-    def __init__(self, server_name='',user_name='',user_pix='',consumer_key='',consumer_secret='',request_token='',access_token_key='',access_token_secret='',access_token='',login_name='',login_passwd=''):
+    def __init__(self, server_name='',user_name='',server_user_name='',server_user_pix='',consumer_key='',consumer_secret='',request_token='',access_token_key='',access_token_secret='',access_token='',login_name='',login_passwd=''):
         self.server_name = server_name
         self.user_name = user_name
-        self.user_pix = user_pix 
+        self.server_user_name = server_user_name
+        self.server_user_pix = server_user_pix 
         self.consumer_key = consumer_key 
         self.consumer_secret = consumer_secret 
         self.request_token = request_token 
@@ -61,7 +64,7 @@ class TWDBS(Base):
         self.login_passwd = login_passwd
 
     def __repr__(self):
-        return "<TWDBS('%s','%s', '%s')>" % (self.server_name, self.user_name, self.user_pix)
+        return "<TWDBS('%s','%s', '%s')>" % (self.server_name, self.user_name, self.server_user_pix)
 
 
 if __name__ == "__main__":

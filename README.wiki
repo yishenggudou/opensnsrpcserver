@@ -35,6 +35,6 @@ access_token_secret
 access_token
 
 ==note==
-oauth的有参考https://github.com/lyxint/wet
+oauth的有参考[wet](https://github.com/lyxint/wet)
 部分代码是基于上面的修改而来
     
