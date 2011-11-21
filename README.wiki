@@ -1,7 +1,8 @@
-= Introduction =
-准备做一个所有的支持openid 登陆的网站的聚合<br/>
-rpc服务器
-= 初期支持 =
+==Introduction==
+#准备做一个所有的支持openid 登陆的网站的聚合<br/>
+rpc服务器<br/>
+#作为自己开发sns app的基础服务之一,用于处理大量三方认证相关
+==初期支持==
 * 新浪微博
 * 腾讯微博
 * 豆瓣
@@ -12,29 +13,27 @@ rpc服务器
 #   请求的服务名[sina,qq,douban,renren,twitter,facebook]
 #   用户授权之后的request token
 #   需要返回的url地址和参数
-==传出参数==
-#   授权页的url
-#   access token
-#
 ==统一的调用函数==
 # 发布消息 Push
 # 获取最新消息 Pull
-# 
+# 获取用户资料 GetProfile 
+# 获取授权页的url GetAuthzUrl
+# 获取access,token  GetAccessToken
 ==数据库设计==
-将配置信息记入数据库
-将每次请求算做一个单独的应用
-当用户授权之后 只需传入consumer_key consumer_secret server_name user_name 即可以获得相应操作
-id
-server_name
-user_name[]
-consumer_key
-consumer_secret
-request_token
-access_token_key
-access_token_secret
-access_token
+#将配置信息记入数据库
+#将每次请求算做一个单独的应用
+#当用户授权之后 只需传入consumer_key consumer_secret server_name user_name 即可以获得相应操作
+#id
+#server_name
+#user_name[]
+#consumer_key
+#consumer_secret
+#request_token
+#access_token_key
+#access_token_secret
+#access_token
 
 ==note==
-oauth的有参考[wet](https://github.com/lyxint/wet)
+#oauth的有参考[wet](https://github.com/lyxint/wet)
 部分代码是基于上面的修改而来
     
